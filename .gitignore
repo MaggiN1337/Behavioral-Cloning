@@ -1,5 +1,7 @@
-
-data.zip
 *.zip
-*.jpg
 *.h5
+windows_sim/
+data/
+data2/
+data3/
+data4/
