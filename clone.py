@@ -16,8 +16,9 @@ import matplotlib.pyplot as plt
 # save whole output to file
 #sys.stdout = open('modelsummary.txt', 'w')
 
-IMAGE_METADATA_CSV = 'driving_log.csv'
-IMAGE_PATH = 'IMG/'
+IMAGE_METADATA_CSV = 'data/driving_log.csv'
+IMAGE_PATH = 'data/IMG/'
+FOLDER_SEPARATOR = '\\'
 TURNING_OFFSET = 0.25
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 1
@@ -41,7 +42,7 @@ def generator(samples):
                     images = []
                     measurements = []
                     source_path = batch_sample[i]
-                    filename = source_path.split('\\')[-1]
+                    filename = source_path.split(FOLDER_SEPARATOR)[-1]
                     current_path = IMAGE_PATH + filename
                     image = cv2.imread(current_path)
                     images.append(image)
@@ -54,24 +55,18 @@ def generator(samples):
                         measurements.append(measurement + TURNING_OFFSET)
 
             # create more test data by flipping the images and inverting the corresponding turn angles
-            augmented_images, augmented_measurements = flip_images_measurements(images, measurements)
+            augmented_images, augmented_measurements = [], []
+            for image, measurement in zip(images, measurements):
+                augmented_images.append(image)
+                augmented_measurements.append(measurement)
+                # only add a flipped turning image
+                if (measurement < -0.1 or measurement > 0.1):
+                    augmented_images.append(cv2.flip(image, 1))
+                    augmented_measurements.append(measurement * -1.0)
 
             X_train_gen = np.array(augmented_images)
             y_train_gen = np.array(augmented_measurements)
             yield shuffle(X_train_gen, y_train_gen)
-
-
-def flip_images_measurements(images, measurements):
-    return_images = []
-    return_meas = []
-    for image, measurement in zip(images, measurements):
-        return_images.append(image)
-        return_meas.append(measurement)
-        # only add a flipped turning image
-        #if (measurement.value() < -0.1 or measurement > 0.1):
-        return_images.append(cv2.flip(image, 1))
-        return_meas.append(measurement * -1.0)
-    return return_images, return_meas
 
 
 # import measurements csv
@@ -95,7 +90,7 @@ else:
     for line in lines:
         for i in range(3):
             source_path = line[i]
-            filename = source_path.split('\\')[-1]
+            filename = source_path.split(FOLDER_SEPARATOR)[-1]
             current_path = IMAGE_PATH + filename
             image = cv2.imread(current_path)
             images.append(image)
@@ -114,8 +109,8 @@ else:
         augmented_measurements.append(measurement)
         # only add a flipped turning image
         # if (measurement.value() < -0.1 or measurement > 0.1):
-        augmented_images.append(cv2.flip(image, 1))
-        augmented_measurements.append(measurement * -1.0)
+        #augmented_images.append(cv2.flip(image, 1))
+        #augmented_measurements.append(measurement * -1.0)
 
     X_train = np.array(augmented_images)
     y_train = np.array(augmented_measurements)
