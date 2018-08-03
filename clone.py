@@ -16,19 +16,27 @@ import matplotlib.pyplot as plt
 # save whole output to file
 #sys.stdout = open('modelsummary.txt', 'w')
 
+# file system settings
 IMG_PATH = 'track1/IMG/'
 IMAGE_METADATA_CSV = 'track1/driving_log.csv'
 TRACK2_METADATA_CSV = 'track2/driving_log.csv'
-
 FOLDER_SEPARATOR = '\\'
+
+# network parameters
 TURNING_OFFSET = 0.25
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 3
 LEARN_RATE = 0.001
 BATCH_SIZE = 32
+
+# learning settings
 FLIP_IMAGES = True
+USE_TRACK2 = True
 USE_GENERATOR = False
-USE_TRACK2 = False
+
+# debug settings
+DEBUG = True
+LIMIT_IMAGES_FOR_DEBUGGING = 128
 
 
 # method to import and measurements from csv
@@ -37,6 +45,8 @@ def csv_to_array(filename):
     with open(filename) as csv_file:
         reader = csv.reader(csv_file)
         for line in reader:
+            if DEBUG and (len(lines) == LIMIT_IMAGES_FOR_DEBUGGING):
+                break
             lines.append(line)
     return lines
 
@@ -93,27 +103,30 @@ def generator(samples):
             yield shuffle(X_train_gen, y_train_gen)
 
 
-track1_data = csv_to_array(IMAGE_METADATA_CSV)
+track_data = csv_to_array(IMAGE_METADATA_CSV)
 if USE_TRACK2:
     track2_data = csv_to_array(TRACK2_METADATA_CSV)
-    track1_data.extend(track2_data)
+    track_data.extend(track2_data)
 
 if USE_GENERATOR:
     # use generators
-    train_samples, validation_samples = train_test_split(track1_data, test_size=TRAIN_VALID_SPLIT)
+    train_samples, validation_samples = train_test_split(track_data, test_size=TRAIN_VALID_SPLIT)
     # compile and train the model using the generator function
     train_generator = generator(train_samples)
     validation_generator = generator(validation_samples)
 
 else:
     # create arrays of images and measurements
-    X_train, y_train = image_augmentation(track1_data)
+    X_train, y_train = image_augmentation(track_data)
 
     X_train = np.array(X_train)
     y_train = np.array(y_train)
 
 model = Sequential()
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
+if USE_GENERATOR:
+    model.add(Lambda(lambda x: (x / 127.5) - 1, input_shape=(80, 320, 3)))
+else:
+    model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
 
 # crop 60 pixels from top, 20 from bottom, 0 from left and right
 model.add(Cropping2D(cropping=((60, 20), (0, 0))))
