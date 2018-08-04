@@ -29,12 +29,12 @@ LEARN_RATE = 0.001
 BATCH_SIZE = 32
 
 # learning settings
-FLIP_IMAGES = False
+FLIP_IMAGES = True
 USE_TRACK2 = True
 USE_GENERATOR = True
 
 # debug settings
-DEBUG = False
+DEBUG = True
 LIMIT_IMAGES_FOR_DEBUGGING = 128
 
 # settings for logging
@@ -93,7 +93,7 @@ def image_augmentation(images_as_array):
         augmented_images.append(image)
         augmented_measurements.append(measurement)
         # only add a flipped image of a turning image
-        if FLIP_IMAGES and (measurement < -0.1 or measurement > 0.1):
+        if (FLIP_IMAGES and abs(measurement) > 0.2):
             augmented_images.append(cv2.flip(image, 1))
             augmented_measurements.append(measurement * -1.0)
     return augmented_images, augmented_measurements
@@ -111,6 +111,7 @@ def generator(samples, batch_size=BATCH_SIZE):
         shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset + batch_size]
+            print("Next Batch run with: ", offset)
 
             X_train_temp, y_train_temp = image_augmentation(batch_samples)
 
@@ -142,7 +143,8 @@ else:
 
 model = Sequential()
 if USE_GENERATOR:
-    model.add(Lambda(lambda x: (x / 127.5) - 1.0, input_shape=(80, 320, 3), output_shape=(80, 320, 3)))
+    model.add(Lambda(lambda x: (x / 127.5) - 1.0, input_shape=(80, 320, 3)))
+    # , output_shape=(80, 320, 3)
 else:
     model.add(Cropping2D(cropping=((60, 20), (0, 0))))
     model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(80, 320, 3)))
@@ -176,12 +178,12 @@ model.compile(loss='mse', optimizer=Adam(LEARN_RATE))
 if USE_GENERATOR:
     # use generator to train model
     history_object = model.fit_generator(train_generator,
-                        steps_per_epoch=(len(train_samples) / BATCH_SIZE),
-                        validation_data=validation_generator,
-                        validation_steps=(len(validation_samples) / BATCH_SIZE),
-                        epochs=TRAIN_EPOCHS,
-                        verbose=1,
-                        callbacks=[csv_logger])
+                                         steps_per_epoch=len(train_samples),
+                                         validation_data=validation_generator,
+                                         validation_steps=len(validation_samples),
+                                         epochs=TRAIN_EPOCHS,
+                                         verbose=1,
+                                         callbacks=[csv_logger])
 else:
     # train model
     history_object = model.fit(X_train,
