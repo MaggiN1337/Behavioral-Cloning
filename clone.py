@@ -1,20 +1,19 @@
 import csv
+import sys
+from contextlib import redirect_stdout
+
 import cv2
 import numpy as np
-import sys
+from keras.callbacks import CSVLogger
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D, Conv2D, Dropout, Activation
-from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import Adam
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-from contextlib import redirect_stdout
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
-# save whole output to file
-#sys.stdout = open('modelsummary.txt', 'w')
 
 # file system settings
 IMG_PATH = 'track1/IMG/'
@@ -30,13 +29,21 @@ LEARN_RATE = 0.001
 BATCH_SIZE = 32
 
 # learning settings
-FLIP_IMAGES = True
+FLIP_IMAGES = False
 USE_TRACK2 = True
-USE_GENERATOR = False
+USE_GENERATOR = True
 
 # debug settings
-DEBUG = True
+DEBUG = False
 LIMIT_IMAGES_FOR_DEBUGGING = 128
+
+# settings for logging
+LOGFILE_NAME = 'logfile.txt'
+csv_logger = CSVLogger('log.csv', append=False, separator=';')
+
+
+# save whole stdout to file
+# sys.stdout = open(LOGFILE_NAME, 'w')
 
 
 # method to import and measurements from csv
@@ -61,6 +68,14 @@ def image_augmentation(images_as_array):
             filename = source_path.split(FOLDER_SEPARATOR)[-1]
             current_path = IMG_PATH + filename
             image = cv2.imread(current_path)
+
+            if USE_GENERATOR:
+                # crop image here
+                image = image[60:140, 0:320]
+
+                # resize image
+                # image = cv2.resize(image, (198, 50), interpolation=cv2.INTER_AREA)
+
             images.append(image)
             measurement = float(line[3])
             # center image
@@ -88,13 +103,14 @@ def image_augmentation(images_as_array):
 
 
 # method for batch processing with generators
-def generator(samples):
+# TODO: Fix generator for long duration
+def generator(samples, batch_size=BATCH_SIZE):
     num_samples = len(samples)
     # Loop forever so the generator never terminates
     while 1:
         shuffle(samples)
-        for offset in range(0, num_samples, BATCH_SIZE):
-            batch_samples = samples[offset:offset + BATCH_SIZE]
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples[offset:offset + batch_size]
 
             X_train_temp, y_train_temp = image_augmentation(batch_samples)
 
@@ -107,29 +123,30 @@ track_data = csv_to_array(IMAGE_METADATA_CSV)
 if USE_TRACK2:
     track2_data = csv_to_array(TRACK2_METADATA_CSV)
     track_data.extend(track2_data)
+    track2_data = []
 
 if USE_GENERATOR:
     # use generators
     train_samples, validation_samples = train_test_split(track_data, test_size=TRAIN_VALID_SPLIT)
     # compile and train the model using the generator function
-    train_generator = generator(train_samples)
-    validation_generator = generator(validation_samples)
+    train_generator = generator(train_samples, batch_size=BATCH_SIZE)
+    validation_generator = generator(validation_samples, batch_size=BATCH_SIZE)
 
 else:
     # create arrays of images and measurements
     X_train, y_train = image_augmentation(track_data)
+    track_data = []
 
     X_train = np.array(X_train)
     y_train = np.array(y_train)
 
 model = Sequential()
 if USE_GENERATOR:
-    model.add(Lambda(lambda x: (x / 127.5) - 1, input_shape=(80, 320, 3)))
+    model.add(Lambda(lambda x: (x / 127.5) - 1.0, input_shape=(80, 320, 3), output_shape=(80, 320, 3)))
 else:
-    model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
-
-# crop 60 pixels from top, 20 from bottom, 0 from left and right
-model.add(Cropping2D(cropping=((60, 20), (0, 0))))
+    model.add(Cropping2D(cropping=((60, 20), (0, 0))))
+    model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(80, 320, 3)))
+    # crop 60 pixels from top, 20 from bottom, 0 from left and right
 
 model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
 model.add(Conv2D(36, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
@@ -137,14 +154,14 @@ model.add(Conv2D(48, (5, 5), strides=(2, 2), padding="valid", activation="relu")
 
 model.add(Conv2D(64, (3, 3), activation="relu"))
 model.add(Conv2D(64, (3, 3), activation="relu"))
-model.add(Conv2D(64, (3, 3), activation="relu"))
+# model.add(Conv2D(64, (3, 3), activation="relu"))
 
 # model.add(Dropout(0.5))
 
 model.add(Flatten())
 
-model.add(Dense(1000))
-model.add(Activation("relu"))
+# model.add(Dense(1000))
+# model.add(Activation("relu"))
 model.add(Dense(100))
 model.add(Activation("relu"))
 model.add(Dense(50))
@@ -159,11 +176,12 @@ model.compile(loss='mse', optimizer=Adam(LEARN_RATE))
 if USE_GENERATOR:
     # use generator to train model
     history_object = model.fit_generator(train_generator,
-                                         steps_per_epoch=len(train_samples),
-                                         validation_data=validation_generator,
-                                         validation_steps=len(validation_samples),
-                                         epochs=TRAIN_EPOCHS,
-                                         verbose=1)
+                        steps_per_epoch=(len(train_samples) / BATCH_SIZE),
+                        validation_data=validation_generator,
+                        validation_steps=(len(validation_samples) / BATCH_SIZE),
+                        epochs=TRAIN_EPOCHS,
+                        verbose=1,
+                        callbacks=[csv_logger])
 else:
     # train model
     history_object = model.fit(X_train,
@@ -171,21 +189,25 @@ else:
                                validation_split=TRAIN_VALID_SPLIT,
                                shuffle=True,
                                epochs=TRAIN_EPOCHS,
-                               verbose=1)
+                               verbose=1,
+                               callbacks=[csv_logger])
 
 # print layer information
-with open('modelsummary.txt', 'w') as f:
+with open(LOGFILE_NAME, 'w') as f:
     with redirect_stdout(f):
-        model.summary()
+        print("This run had the following settings:")
+        print("Generator was used: " + str(USE_GENERATOR))
+        print("Track2 was used: " + str(USE_TRACK2))
+        print("Image augmentation was used with flipping images: " + str(FLIP_IMAGES))
         print("Number of epochs: " + str(TRAIN_EPOCHS))
         print("Learning rate: " + str(LEARN_RATE))
         print("Batch size: " + str(BATCH_SIZE))
 
+        print("Keras layer summary: ")
+        model.summary()
+
 # save trained model to file
 model.save('model.h5')
-
-# print the keys contained in the history object
-print(history_object.history.keys())
 
 # save the training and validation loss as image
 plt.plot(history_object.history['loss'])
