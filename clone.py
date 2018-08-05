@@ -111,8 +111,10 @@ def gamma_correction(img, gamma):
     # brighten or darken image
     inv_gamma = 1.0 / gamma
 
-    table = np.array([((i / 255.0) ** inv_gamma) * 255
-                         for i in np.arange(0, 256)]).astype("uint8")
+    table = np.array(
+        [((i / 255.0) ** inv_gamma) * 255
+         for i in np.arange(0, 256)]
+    ).astype("uint8")
 
     # apply gamma correction using the lookup table
     return cv2.LUT(img, table)
