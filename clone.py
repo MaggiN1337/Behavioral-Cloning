@@ -29,13 +29,13 @@ LEARN_RATE = 0.001
 BATCH_SIZE = 32
 
 # learning settings
-FLIP_IMAGES = True
-USE_GAMMA_CORRECTION = True
+FLIP_IMAGES = False
+USE_GAMMA_CORRECTION = False
 USE_TRACK2 = False
-USE_GENERATOR = False
+USE_GENERATOR = True
 
 # debug settings
-DEBUG = True
+DEBUG = False
 LIMIT_IMAGES_FOR_DEBUGGING = 128
 
 # settings for logging
@@ -60,7 +60,7 @@ def csv_to_array(filename):
 
 
 # method for image augmentation
-def image_augmentation(images_as_array):
+def image_augmentation(images_as_array, augment_data):
     images = []
     measurements = []
     for line in images_as_array:
@@ -91,22 +91,23 @@ def image_augmentation(images_as_array):
         augmented_images.append(image)
         augmented_measurements.append(measurement)
         # only add a flipped image of a turning image
-        if (FLIP_IMAGES and abs(measurement) > 0.2):
-            augmented_images.append(cv2.flip(image, 1))
-            augmented_measurements.append(measurement * -1.0)
-        if USE_GAMMA_CORRECTION:
-            # darken images
-            for y in range(-5, 0, 2):
-                augmented_images.append(gamma_correction(image, y))
-                augmented_measurements.append(measurement)
-            # brigthen images
-            for y in range(1, 6, 2):
-                augmented_images.append(gamma_correction(image, y))
-                augmented_measurements.append(measurement)
+        if augment_data:
+            if (FLIP_IMAGES and abs(measurement) > 0.2):
+                augmented_images.append(cv2.flip(image, 1))
+                augmented_measurements.append(measurement * -1.0)
+            if USE_GAMMA_CORRECTION:
+                # darken images
+                for y in range(-5, 0, 2):
+                    augmented_images.append(gamma_correction(image, y))
+                    augmented_measurements.append(measurement)
+                # brighten images
+                for y in range(1, 6, 2):
+                    augmented_images.append(gamma_correction(image, y))
+                    augmented_measurements.append(measurement)
     return augmented_images, augmented_measurements
 
 
-# TODO: add gamma correction for shadow simulation
+# add gamma correction for shadow simulation
 def gamma_correction(img, gamma):
     # brighten or darken image
     inv_gamma = 1.0 / gamma
@@ -122,20 +123,25 @@ def gamma_correction(img, gamma):
 
 # method for batch processing with generators
 # TODO: Fix generator for long duration
-def generator(samples, batch_size=BATCH_SIZE):
+def generator(samples, batch_size=BATCH_SIZE, augment_data=False):
     num_samples = len(samples)
     # Loop forever so the generator never terminates
+    i = -1
     while 1:
         shuffle(samples)
+        i+= 1
+        y = 0
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset + batch_size]
-            print("Next Batch run with: ", offset)
+            #print("\nNext Batch run %d / %d " % (offset, num_samples))
+            print("\nNext Batch run %d.%d " % (i, y))
 
-            X_train_temp, y_train_temp = image_augmentation(batch_samples)
+            X_train_temp, y_train_temp = image_augmentation(batch_samples, augment_data)
 
             X_train_gen = np.array(X_train_temp)
             y_train_gen = np.array(y_train_temp)
             yield shuffle(X_train_gen, y_train_gen)
+            y += 1
 
 
 track_data = csv_to_array(IMAGE_METADATA_CSV)
@@ -148,8 +154,8 @@ if USE_GENERATOR:
     # use generators
     train_samples, validation_samples = train_test_split(track_data, test_size=TRAIN_VALID_SPLIT)
     # compile and train the model using the generator function
-    train_generator = generator(train_samples, batch_size=BATCH_SIZE)
-    validation_generator = generator(validation_samples, batch_size=BATCH_SIZE)
+    train_generator = generator(train_samples, batch_size=BATCH_SIZE, augment_data=True)
+    validation_generator = generator(validation_samples, batch_size=BATCH_SIZE, augment_data=False)
 
 else:
     # create arrays of images and measurements
@@ -201,7 +207,11 @@ if USE_GENERATOR:
                                          validation_steps=len(validation_samples),
                                          epochs=TRAIN_EPOCHS,
                                          verbose=1,
-                                         callbacks=[csv_logger])
+                                         callbacks=[csv_logger],
+                                         #max_queue_size=3,
+                                         #workers=4
+                                         use_multiprocessing=False
+                                         )
 else:
     # train model
     history_object = model.fit(X_train,
