@@ -30,8 +30,9 @@ BATCH_SIZE = 32
 
 # learning settings
 FLIP_IMAGES = True
-USE_TRACK2 = True
-USE_GENERATOR = True
+USE_GAMMA_CORRECTION = True
+USE_TRACK2 = False
+USE_GENERATOR = False
 
 # debug settings
 DEBUG = True
@@ -73,9 +74,6 @@ def image_augmentation(images_as_array):
                 # crop image here
                 image = image[60:140, 0:320]
 
-                # resize image
-                # image = cv2.resize(image, (198, 50), interpolation=cv2.INTER_AREA)
-
             images.append(image)
             measurement = float(line[3])
             # center image
@@ -96,10 +94,28 @@ def image_augmentation(images_as_array):
         if (FLIP_IMAGES and abs(measurement) > 0.2):
             augmented_images.append(cv2.flip(image, 1))
             augmented_measurements.append(measurement * -1.0)
+        if USE_GAMMA_CORRECTION:
+            # darken images
+            for y in range(-5, 0, 2):
+                augmented_images.append(gamma_correction(image, y))
+                augmented_measurements.append(measurement)
+            # brigthen images
+            for y in range(1, 6, 2):
+                augmented_images.append(gamma_correction(image, y))
+                augmented_measurements.append(measurement)
     return augmented_images, augmented_measurements
 
 
 # TODO: add gamma correction for shadow simulation
+def gamma_correction(img, gamma):
+    # brighten or darken image
+    inv_gamma = 1.0 / gamma
+
+    table = np.array([((i / 255.0) ** inv_gamma) * 255
+                         for i in np.arange(0, 256)]).astype("uint8")
+
+    # apply gamma correction using the lookup table
+    return cv2.LUT(img, table)
 
 
 # method for batch processing with generators
