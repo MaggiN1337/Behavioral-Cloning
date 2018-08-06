@@ -34,7 +34,7 @@ USE_GENERATOR = True
 
 # debug settings
 DEBUG = True
-LIMIT_IMAGES_FOR_DEBUGGING = 12
+LIMIT_CSV_LINES_FOR_DEBUGGING = 12
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
@@ -50,7 +50,7 @@ def csv_to_array(filename):
     with open(filename) as csv_file:
         reader = csv.reader(csv_file)
         for line in reader:
-            if DEBUG and (len(lines) == LIMIT_IMAGES_FOR_DEBUGGING):
+            if DEBUG and (len(lines) == LIMIT_CSV_LINES_FOR_DEBUGGING):
                 break
             lines.append(line)
     return lines
@@ -60,58 +60,65 @@ def csv_to_array(filename):
 
 # method for image augmentation
 def image_augmentation(images_as_array, augment_data):
-    images = []
-    measurements = []
-    for line in images_as_array:
-        for i in range(3):
-            source_path = line[i]
-            filename = source_path.split(FOLDER_SEPARATOR)[-1]
-            current_path = IMG_PATH + filename
-            image = cv2.imread(current_path)
-
-            if USE_GENERATOR:
-                # crop image here
-                image = image[60:140, 0:320]
-
-            images.append(image)
-            measurement = float(line[3])
-            # center image
-            if i == 0:
-                measurements.append(measurement)
-            # left image
-            elif i == 1:
-                measurements.append(measurement + TURNING_OFFSET)
-            # right image
-            elif i == 2:
-                measurements.append(measurement - TURNING_OFFSET)
-    # create more test data by flipping the images and inverting the corresponding turn angles
     augmented_images, augmented_measurements = [], []
-    for image, measurement in zip(images, measurements):
-        augmented_images.append(image)
-        augmented_measurements.append(measurement)
-        # only add a flipped image of a turning image
-        if augment_data:
-            if (FLIP_IMAGES and abs(measurement) > 0.2):
-                augmented_images.append(cv2.flip(image, 1))
-                augmented_measurements.append(measurement * -1.0)
-            if USE_GAMMA_CORRECTION:
-                # darken images
-                for y in range(-5, 0, 2):
-                    augmented_images.append(gamma_correction(image, y))
-                    augmented_measurements.append(measurement)
-                # brighten images
-                for y in range(1, 6, 2):
-                    augmented_images.append(gamma_correction(image, y))
-                    augmented_measurements.append(measurement)
+
+    for line in images_as_array:
+
+        # as each line contains 3 images, get each of them with its turning angle
+        for i in range(3):
+            image_from_line, meas_from_line = get_image_and_measurement_from_line(line, i)
+            augmented_images.append(image_from_line)
+            augmented_measurements.append(meas_from_line)
+
+            # create more test data by flipping the images and inverting the corresponding turn angles
+            if augment_data:
+
+                # only add a flipped image of a turning image
+                if FLIP_IMAGES and abs(meas_from_line) > 0.2:
+                    augmented_images.append(cv2.flip(image_from_line, 1))
+                    augmented_measurements.append(meas_from_line * -1.0)
+
+                # add a bright and dark image to the data set
+                if USE_GAMMA_CORRECTION:
+                    # darken images
+                    augmented_images.append(gamma_correction(image_from_line, -5))
+                    augmented_measurements.append(meas_from_line)
+
+                    # brighten images
+                    augmented_images.append(gamma_correction(image_from_line, 5))
+                    augmented_measurements.append(meas_from_line)
+
     return augmented_images, augmented_measurements
 
 
+# load image from filename and get corresponding turning angle
+def get_image_and_measurement_from_line(line, i):
+    source_path = line[i]
+    filename = source_path.split(FOLDER_SEPARATOR)[-1]
+    relative_path_to_image = IMG_PATH + filename
+    image = cv2.imread(relative_path_to_image)
+
+    if USE_GENERATOR:
+        # crop image here
+        image = image[60:140, 0:320]
+
+    # center image
+    meas = float(line[3])
+    # left image
+    if i == 1:
+        meas += TURNING_OFFSET
+    # right image
+    elif i == 2:
+        meas -= TURNING_OFFSET
+    return image, meas
+
+
 # apply gamma correction for shadow simulation
+# TODO: Fix RuntimeWarning: divide by zero encountered in double_scalars
 def gamma_correction(img, gamma):
     # brighten or darken image
     inv_gamma = 1.0 / gamma
 
-    # TODO: Fix RuntimeWarning: divide by zero encountered in double_scalars
     table = np.array(
         [((i / 255.0) ** inv_gamma) * 255
          for i in np.arange(0, 256)]
@@ -222,10 +229,11 @@ if USE_GENERATOR:
 else:
     # create arrays of images and measurements
     X_train, y_train = image_augmentation(track_data, augment_data=True)
-    track_data = []
-
     X_train = np.array(X_train)
     y_train = np.array(y_train)
+    print("Working with %d images:" % len(y_train))
+
+track_data = []
 
 create_model()
 
