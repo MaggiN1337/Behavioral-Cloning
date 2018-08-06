@@ -27,14 +27,14 @@ LEARN_RATE = 0.001
 BATCH_SIZE = 64
 
 # learning settings
-FLIP_IMAGES = True
-USE_GAMMA_CORRECTION = True
-USE_TRACK2 = True  # type: bool
-USE_GENERATOR = True
+FLIP_IMAGES = True           # type: bool
+USE_GAMMA_CORRECTION = True  # type: bool
+USE_TRACK2 = True            # type: bool
+USE_GENERATOR = False         # type: bool
 
 # debug settings
-DEBUG = True
-LIMIT_CSV_LINES_FOR_DEBUGGING = 12
+DEBUG = True                 # type: bool
+LIMIT_CSV_LINES_FOR_DEBUGGING = 1000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
@@ -55,8 +55,6 @@ def csv_to_array(filename):
             lines.append(line)
     return lines
 
-
-# TODO: add RGB to BGR fix
 
 # method for image augmentation
 def image_augmentation(images_as_array, augment_data):
@@ -96,7 +94,12 @@ def get_image_and_measurement_from_line(line, i):
     source_path = line[i]
     filename = source_path.split(FOLDER_SEPARATOR)[-1]
     relative_path_to_image = IMG_PATH + filename
+
+    # load image
     image = cv2.imread(relative_path_to_image)
+
+    # convert to RGB color for drive.py
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     if USE_GENERATOR:
         # crop image here
@@ -126,6 +129,9 @@ def gamma_correction(img, gamma):
 
     # apply gamma correction using the lookup table
     return cv2.LUT(img, table)
+
+
+# TODO: clean up data set to have equal distribution of turning angle images
 
 
 # method for batch processing with generators
