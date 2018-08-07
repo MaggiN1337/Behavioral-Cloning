@@ -24,13 +24,15 @@ TURNING_OFFSET = 0.25
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 3
 LEARN_RATE = 0.001
-BATCH_SIZE = 64
 
-# learning settings
+# train with generators
+BATCH_SIZE = 64
+USE_GENERATOR = False         # type: bool
+
+# training image editing
 FLIP_IMAGES = True           # type: bool
 USE_GAMMA_CORRECTION = True  # type: bool
 USE_TRACK2 = True            # type: bool
-USE_GENERATOR = False         # type: bool
 
 # debug settings
 DEBUG = True                 # type: bool
@@ -59,7 +61,7 @@ def csv_to_array(filename):
 # method for image augmentation
 def image_augmentation(images_as_array, augment_data):
     augmented_images, augmented_measurements = [], []
-
+    counter = 0
     for line in images_as_array:
 
         # as each line contains 3 images, get each of them with its turning angle
@@ -86,6 +88,10 @@ def image_augmentation(images_as_array, augment_data):
                     augmented_images.append(gamma_correction(image_from_line, 5))
                     augmented_measurements.append(meas_from_line)
 
+        # count number of processed images (3 for each line) and print every 500
+        counter += 3
+        if counter % 500 == 0:
+            print("Processed %d images." % counter)
     return augmented_images, augmented_measurements
 
 
@@ -226,6 +232,11 @@ track_data = csv_to_array(IMAGE_METADATA_CSV)
 if USE_TRACK2:
     track_data.extend(csv_to_array(TRACK2_METADATA_CSV))
 
+np.random.shuffle(track_data)
+
+print("Image preprocessing with %d raw images now." % (3 * len(track_data)))
+
+# define generators or preprocess images
 if USE_GENERATOR:
     # use generators
     train_samples, validation_samples = train_test_split(track_data, test_size=TRAIN_VALID_SPLIT)
@@ -237,7 +248,7 @@ else:
     X_train, y_train = image_augmentation(track_data, augment_data=True)
     X_train = np.array(X_train)
     y_train = np.array(y_train)
-    print("Working with %d images:" % len(y_train))
+    print("Train the network with %d images now." % len(y_train))
 
 track_data = []
 
