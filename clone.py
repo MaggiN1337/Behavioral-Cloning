@@ -23,6 +23,7 @@ FOLDER_SEPARATOR = '\\'
 
 # network parameters
 TURNING_OFFSET = 0.25
+LIMIT_IMAGES_PER_TURNING_ANGLE = 500
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 3
 LEARN_RATE = 0.001
@@ -38,7 +39,7 @@ USE_TRACK2 = True            # type: bool
 
 # debug settings
 DEBUG = True                 # type: bool
-LIMIT_IMAGES_FOR_DEBUGGING = 1000
+LIMIT_IMAGES_FOR_DEBUGGING = 100
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
@@ -64,14 +65,25 @@ def image_augmentation(images_as_array, augment_data):
     counter = 0
     for line in images_as_array:
         if DEBUG and (len(augmented_images) > LIMIT_IMAGES_FOR_DEBUGGING):
+            print("Image limitation for debugging is reached.")
             break
+
+        # calculate training data distribution
+        distribution = Counter(augmented_measurements)
+
         # as each line contains 3 images, get each of them with its turning angle
         for i in range(3):
             image_from_line, meas_from_line = get_image_and_measurement_from_line(line, i)
+
+            if distribution[meas_from_line] >= LIMIT_IMAGES_PER_TURNING_ANGLE:
+                # print("Already enough images for turning angle %f" % meas_from_line)
+                break
+
             augmented_images.append(image_from_line)
             augmented_measurements.append(meas_from_line)
 
             # create more test data by flipping the images and inverting the corresponding turn angles
+            # do not augment data, if already enough
             if augment_data:
 
                 # only add a flipped image of a turning image
@@ -138,9 +150,6 @@ def gamma_correction(img, gamma):
     return cv2.LUT(img, table)
 
 
-# TODO: clean up data set to have equal distribution of turning angle images
-
-
 # method for batch processing with generators
 # TODO: Fix generator for long duration
 def generator(samples, batch_size=BATCH_SIZE, augment_data=False):
@@ -178,14 +187,19 @@ def create_model():
         model.add(Cropping2D(cropping=((60, 20), (0, 0))))
         model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(80, 320, 3)))
         # crop 60 pixels from top, 20 from bottom, 0 from left and right
+    # TODO: Finish model
     model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
     model.add(Conv2D(36, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
     model.add(Conv2D(48, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
+
     model.add(Dropout(0.5))
+
     model.add(Conv2D(64, (3, 3), activation="relu"))
     model.add(Conv2D(64, (3, 3), activation="relu"))
     # model.add(Conv2D(64, (3, 3), activation="relu"))
+
     model.add(Dropout(0.5))
+
     model.add(Flatten())
     # model.add(Dense(1000))
     # model.add(Activation("relu"))
@@ -205,8 +219,7 @@ def create_model():
 # plot a distribution from a list of key-value-pairs with a specific title
 def plot_counts(measurements, title):
     data, counts = zip(*measurements)
-    plt.bar(data, counts, align='center')
-    # TODO: add space between single bars
+    plt.bar(data, counts, 0.1, align='center')
     plt.title(title)
     plt.savefig('training_data_distribution.png')
     plt.close()
@@ -219,6 +232,7 @@ def plot_loss_functions_as_png(training):
     plt.title('model mean squared error loss')
     plt.ylabel('mean squared error loss')
     plt.xlabel('epoch')
+    plt.xticks(np.arange(0, TRAIN_EPOCHS, step=1.0))
     plt.legend(['training set', 'validation set'], loc='upper right')
     plt.savefig('loss_visualization.png')
     plt.close()
@@ -240,10 +254,12 @@ def export_execution_details():
             model.summary()
 
 
+# import track data
 track_data = csv_to_array(IMAGE_METADATA_CSV)
 if USE_TRACK2:
     track_data.extend(csv_to_array(TRACK2_METADATA_CSV))
 
+# shuffle all the track data
 np.random.shuffle(track_data)
 
 print("Listed %d raw images now." % (3 * len(track_data)))
@@ -265,8 +281,10 @@ else:
     plot_counts(Counter(y_train).items(), "Turning angle measurement distribution")
     print("Train the network with %d images now." % len(y_train))
 
+# clean up raw track data
 track_data = []
 
+# create the learning model
 create_model()
 
 # Train the model with or without generator
