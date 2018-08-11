@@ -25,7 +25,7 @@ FOLDER_SEPARATOR = '\\'
 TURNING_OFFSET = 0.25
 LIMIT_IMAGES_PER_TURNING_ANGLE = 500
 TRAIN_VALID_SPLIT = 0.2
-TRAIN_EPOCHS = 3
+TRAIN_EPOCHS = 5
 LEARN_RATE = 0.001
 
 # train with generators
@@ -39,7 +39,7 @@ USE_TRACK2 = True            # type: bool
 
 # debug settings
 DEBUG = True                 # type: bool
-LIMIT_IMAGES_FOR_DEBUGGING = 100
+LIMIT_IMAGES_FOR_DEBUGGING = 40000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
@@ -182,12 +182,11 @@ def create_model():
     model = Sequential()
     if USE_GENERATOR:
         model.add(Lambda(lambda x: (x / 127.5) - 1.0, input_shape=(80, 320, 3)))
-        # , output_shape=(80, 320, 3)
     else:
+        # crop 60 pixels from top, 20 from bottom, 0 from left and right
         model.add(Cropping2D(cropping=((60, 20), (0, 0))))
         model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(80, 320, 3)))
-        # crop 60 pixels from top, 20 from bottom, 0 from left and right
-    # TODO: Finish model
+
     model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
     model.add(Conv2D(36, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
     model.add(Conv2D(48, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
@@ -196,20 +195,16 @@ def create_model():
 
     model.add(Conv2D(64, (3, 3), activation="relu"))
     model.add(Conv2D(64, (3, 3), activation="relu"))
-    # model.add(Conv2D(64, (3, 3), activation="relu"))
 
     model.add(Dropout(0.5))
 
     model.add(Flatten())
-    # model.add(Dense(1000))
-    # model.add(Activation("relu"))
-    model.add(Dense(500))
-    model.add(Activation("relu"))
-    model.add(Dense(100))
-    model.add(Activation("relu"))
-    # model.add(Dense(10))
-    # model.add(Activation("relu"))
-    model.add(Dense(1))
+
+    model.add(Dense(1000, activation="relu"))
+    model.add(Dense(100, activation="relu"))
+    model.add(Dense(10, activation="relu"))
+    model.add(Dense(1, activation="relu"))
+
     # use mean squared error function with adam-optimizer
     model.compile(loss='mse', optimizer=Adam(LEARN_RATE))
 
@@ -217,9 +212,9 @@ def create_model():
 
 
 # plot a distribution from a list of key-value-pairs with a specific title
-def plot_counts(measurements, title):
+def plot_counts_as_png(measurements, title):
     data, counts = zip(*measurements)
-    plt.bar(data, counts, 0.1, align='center')
+    plt.bar(data, counts, 0.05, align='center')
     plt.title(title)
     plt.savefig('training_data_distribution.png')
     plt.close()
@@ -243,13 +238,18 @@ def export_execution_details():
     with open(LOGFILE_NAME, 'w') as f:
         with redirect_stdout(f):
             print("This run had the following settings:")
-            print("Generator was used: " + str(USE_GENERATOR))
             print("Track2 was used: " + str(USE_TRACK2))
-            print("Image augmentation was used with flipping images: " + str(FLIP_IMAGES))
+            print("Image augmentation was used with: ")
+            print(" - flipping images: " + str(FLIP_IMAGES))
+            print(" - gamma correction: " + str(USE_GAMMA_CORRECTION))
             print("Number of epochs: " + str(TRAIN_EPOCHS))
             print("Learning rate: " + str(LEARN_RATE))
-            print("Batch size: " + str(BATCH_SIZE))
-
+            print("Turning angle offset: " + str(TURNING_OFFSET))
+            print("Image limitation per turning angle: " + str(LIMIT_IMAGES_PER_TURNING_ANGLE))
+            print("Train validation split ratio: " + str(TRAIN_VALID_SPLIT))
+            print("Generator was used: " + str(USE_GENERATOR))
+            if USE_GENERATOR:
+                print("Batch size: " + str(BATCH_SIZE))
             print("Keras layer summary: ")
             model.summary()
 
@@ -278,7 +278,7 @@ else:
     y_train = np.array(y_train)
 
     # print test data distribution
-    plot_counts(Counter(y_train).items(), "Turning angle measurement distribution")
+    plot_counts_as_png(Counter(y_train).items(), "Turning angle measurement distribution")
     print("Train the network with %d images now." % len(y_train))
 
 # clean up raw track data
