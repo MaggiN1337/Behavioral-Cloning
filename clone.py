@@ -1,5 +1,7 @@
 import sys
 import csv
+from collections import Counter
+
 import cv2
 import numpy as np
 from keras.callbacks import CSVLogger
@@ -36,7 +38,7 @@ USE_TRACK2 = True            # type: bool
 
 # debug settings
 DEBUG = True                 # type: bool
-LIMIT_CSV_LINES_FOR_DEBUGGING = 1000
+LIMIT_IMAGES_FOR_DEBUGGING = 1000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
@@ -52,8 +54,6 @@ def csv_to_array(filename):
     with open(filename) as csv_file:
         reader = csv.reader(csv_file)
         for line in reader:
-            if DEBUG and (len(lines) == LIMIT_CSV_LINES_FOR_DEBUGGING):
-                break
             lines.append(line)
     return lines
 
@@ -63,7 +63,8 @@ def image_augmentation(images_as_array, augment_data):
     augmented_images, augmented_measurements = [], []
     counter = 0
     for line in images_as_array:
-
+        if DEBUG and (len(augmented_images) > LIMIT_IMAGES_FOR_DEBUGGING):
+            break
         # as each line contains 3 images, get each of them with its turning angle
         for i in range(3):
             image_from_line, meas_from_line = get_image_and_measurement_from_line(line, i)
@@ -148,6 +149,7 @@ def generator(samples, batch_size=BATCH_SIZE, augment_data=False):
     # Loop forever so the generator never terminates
     i = -1
     while 1:
+        X_train_gen, y_train_gen = [], []
         shuffle(samples)
         i += 1
         y = 0
@@ -200,6 +202,16 @@ def create_model():
     return model
 
 
+# plot a distribution from a list of key-value-pairs with a specific title
+def plot_counts(measurements, title):
+    data, counts = zip(*measurements)
+    plt.bar(data, counts, align='center')
+    # TODO: add space between single bars
+    plt.title(title)
+    plt.savefig('training_data_distribution.png')
+    plt.close()
+
+
 # save the training and validation loss as image
 def plot_loss_functions_as_png(training):
     plt.plot(training.history['loss'])
@@ -234,7 +246,7 @@ if USE_TRACK2:
 
 np.random.shuffle(track_data)
 
-print("Image preprocessing with %d raw images now." % (3 * len(track_data)))
+print("Listed %d raw images now." % (3 * len(track_data)))
 
 # define generators or preprocess images
 if USE_GENERATOR:
@@ -248,6 +260,9 @@ else:
     X_train, y_train = image_augmentation(track_data, augment_data=True)
     X_train = np.array(X_train)
     y_train = np.array(y_train)
+
+    # print test data distribution
+    plot_counts(Counter(y_train).items(), "Turning angle measurement distribution")
     print("Train the network with %d images now." % len(y_train))
 
 track_data = []
