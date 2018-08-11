@@ -1,9 +1,8 @@
 import sys
 import csv
-from collections import Counter
-
 import cv2
 import numpy as np
+from collections import Counter
 from keras.callbacks import CSVLogger
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D, Conv2D, Dropout, Activation
@@ -39,7 +38,7 @@ USE_TRACK2 = True            # type: bool
 
 # debug settings
 DEBUG = True                 # type: bool
-LIMIT_IMAGES_FOR_DEBUGGING = 40000
+LIMIT_IMAGES_FOR_DEBUGGING = 50000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
