@@ -3,6 +3,7 @@ import csv
 import cv2
 import numpy as np
 from collections import Counter
+from PIL import Image, ImageEnhance
 from keras.callbacks import CSVLogger
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D, Conv2D, Dropout, Activation
@@ -19,30 +20,33 @@ IMG_PATH = 'track1/IMG/'
 IMAGE_METADATA_CSV = 'track1/driving_log.csv'
 TRACK2_METADATA_CSV = 'track2/driving_log.csv'
 FOLDER_SEPARATOR = '\\'
+OUTPUT_PATH = 'examples/'
 
 # network parameters
 TURNING_OFFSET = 0.25
-LIMIT_IMAGES_PER_TURNING_ANGLE = 500
+LIMIT_IMAGES_PER_TURNING_ANGLE = 400
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 5
 LEARN_RATE = 0.001
 
 # train with generators
-BATCH_SIZE = 64
-USE_GENERATOR = False         # type: bool
+BATCH_SIZE = 512
+USE_GENERATOR = False  # type: bool
 
 # training image editing
-FLIP_IMAGES = True           # type: bool
-USE_GAMMA_CORRECTION = True  # type: bool
-USE_TRACK2 = True            # type: bool
+FLIP_IMAGES = True  # type: bool
+ADAPT_BRIGHTNESS = True  # type: bool
+USE_GAMMA_CORRECTION = False  # type: bool
+USE_TRACK2 = True  # type: bool
 
 # debug settings
-DEBUG = True                 # type: bool
-LIMIT_IMAGES_FOR_DEBUGGING = 50000
+DEBUG = True  # type: bool
+LIMIT_IMAGES_FOR_DEBUGGING = 40000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
 csv_logger = CSVLogger('log.csv', append=False, separator=';')
+
 
 # save whole stdout to file
 # sys.stdout = open(LOGFILE_NAME, 'w')
@@ -56,6 +60,12 @@ def csv_to_array(filename):
         for line in reader:
             lines.append(line)
     return lines
+
+
+# method for example image output
+def save_images_as_png(array_with_images):
+    for i in range(len(array_with_images)):
+        cv2.imwrite(OUTPUT_PATH + 'image_' + str(i) + '.png', array_with_images[i])
 
 
 # method for image augmentation
@@ -92,14 +102,25 @@ def image_augmentation(images_as_array, augment_data):
 
                 # add a bright and dark image to the data set
                 if USE_GAMMA_CORRECTION:
-                    # darken images
                     augmented_images.append(gamma_correction(image_from_line, -5))
                     augmented_measurements.append(meas_from_line)
 
-                    # brighten images
                     augmented_images.append(gamma_correction(image_from_line, 5))
                     augmented_measurements.append(meas_from_line)
 
+                if ADAPT_BRIGHTNESS:
+                    # darken images
+                    augmented_images.append(adjust_brightness(image_from_line, 1.6))
+                    augmented_measurements.append(meas_from_line)
+
+                    # brighten images
+                    augmented_images.append(adjust_brightness(image_from_line, 0.4))
+                    augmented_measurements.append(meas_from_line)
+
+        # save only images of first run
+        if counter == 0:
+            save_images_as_png(augmented_images)
+            counter += 1
         # count number of processed images (3 for each line) and print every 500
         counter += 3
         if counter % 500 == 0:
@@ -115,9 +136,13 @@ def get_image_and_measurement_from_line(line, i):
 
     # load image
     image = cv2.imread(relative_path_to_image)
+    # cv2.imwrite(OUTPUT_PATH + 'input_image.png', image)
+
+    # TODO: crop images here
 
     # convert to RGB color for drive.py
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # cv2.imwrite(OUTPUT_PATH + 'input_image_RGB.png', image)
 
     if USE_GENERATOR:
         # crop image here
@@ -134,8 +159,15 @@ def get_image_and_measurement_from_line(line, i):
     return image, meas
 
 
+# adjust image brightness to simulate sun and shadow
+def adjust_brightness(input_image, factor):
+    image = Image.fromarray(np.uint8(input_image))
+    enhancer_object = ImageEnhance.Brightness(image)
+    out = enhancer_object.enhance(factor)
+    return np.array(out)
+
+
 # apply gamma correction for shadow simulation
-# TODO: Fix RuntimeWarning: divide by zero encountered in double_scalars
 def gamma_correction(img, gamma):
     # brighten or darken image
     inv_gamma = 1.0 / gamma
@@ -183,7 +215,7 @@ def create_model():
         model.add(Lambda(lambda x: (x / 127.5) - 1.0, input_shape=(80, 320, 3)))
     else:
         # crop 60 pixels from top, 20 from bottom, 0 from left and right
-        model.add(Cropping2D(cropping=((60, 20), (0, 0))))
+        model.add(Cropping2D(cropping=((60, 20), (0, 0)), input_shape=(160, 320, 3)))
         model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(80, 320, 3)))
 
     model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="valid", activation="relu"))
@@ -199,10 +231,18 @@ def create_model():
 
     model.add(Flatten())
 
-    model.add(Dense(1000, activation="relu"))
-    model.add(Dense(100, activation="relu"))
-    model.add(Dense(10, activation="relu"))
-    model.add(Dense(1, activation="relu"))
+    model.add(Dense(1000))
+    model.add(Activation("relu"))
+
+    model.add(Dropout(0.5))
+
+    model.add(Dense(100))
+    model.add(Activation("relu"))
+
+    model.add(Dense(10))
+    model.add(Activation("relu"))
+
+    model.add(Dense(1))
 
     # use mean squared error function with adam-optimizer
     model.compile(loss='mse', optimizer=Adam(LEARN_RATE))
@@ -241,6 +281,7 @@ def export_execution_details():
             print("Image augmentation was used with: ")
             print(" - flipping images: " + str(FLIP_IMAGES))
             print(" - gamma correction: " + str(USE_GAMMA_CORRECTION))
+            print(" - Brightness adjustment: " + str(ADAPT_BRIGHTNESS))
             print("Number of epochs: " + str(TRAIN_EPOCHS))
             print("Learning rate: " + str(LEARN_RATE))
             print("Turning angle offset: " + str(TURNING_OFFSET))
@@ -294,7 +335,7 @@ if USE_GENERATOR:
                                                   validation_steps=len(validation_samples),
                                                   epochs=TRAIN_EPOCHS,
                                                   verbose=1,
-                                                  callbacks=[csv_logger],
+                                                  # callbacks=[csv_logger],
                                                   # max_queue_size=3,
                                                   # workers=4
                                                   # use_multiprocessing=False
@@ -306,7 +347,8 @@ else:
                                         shuffle=True,
                                         epochs=TRAIN_EPOCHS,
                                         verbose=1,
-                                        callbacks=[csv_logger])
+                                        # callbacks=[csv_logger]
+                                        )
 
 # print layer information
 export_execution_details()
