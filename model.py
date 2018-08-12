@@ -21,6 +21,10 @@ TRACK2_METADATA_CSV = 'track2/driving_log.csv'
 FOLDER_SEPARATOR = '\\'
 OUTPUT_PATH = 'examples/'
 
+# settings for logging
+LOGFILE_NAME = 'logfile.txt'
+csv_logger = CSVLogger(OUTPUT_PATH + 'log.csv', append=False, separator=';')
+
 # network parameters
 TURNING_OFFSET = 0.25
 LIMIT_IMAGES_PER_TURNING_ANGLE = 400
@@ -41,10 +45,6 @@ USE_TRACK2 = True
 # debug settings
 DEBUG = True
 LIMIT_IMAGES_FOR_DEBUGGING = 40000
-
-# settings for logging
-LOGFILE_NAME = 'logfile.txt'
-csv_logger = CSVLogger(OUTPUT_PATH + 'log.csv', append=False, separator=';')
 
 
 # method to import and measurements from csv

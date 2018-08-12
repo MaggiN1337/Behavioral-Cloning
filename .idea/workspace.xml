@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="123cc7e5-a4ff-499c-8e65-03248866fbd8" name="Default Changelist" comment="added training data distribution and moved debug limitation to data_augmentation method instead of csv import">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="123cc7e5-a4ff-499c-8e65-03248866fbd8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lastrun.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/loss_visualization.png" beforeDir="false" afterPath="$PROJECT_DIR$/loss_visualization.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modelsummary.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/writeup_template.md" beforeDir="false" afterPath="$PROJECT_DIR$/writeup_report.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/writeup_report.md" beforeDir="false" afterPath="$PROJECT_DIR$/writeup_report.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,16 +36,16 @@
           <entry key="Python Console" value="202" />
           <entry key="dummy" value="91" />
           <entry key="gitignore" value="60" />
-          <entry key="md" value="297" />
-          <entry key="py" value="10591" />
-          <entry key="txt" value="665" />
+          <entry key="md" value="1171" />
+          <entry key="py" value="10621" />
+          <entry key="txt" value="714" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Markdown" value="297" />
-          <entry key="PLAIN_TEXT" value="816" />
-          <entry key="Python" value="10793" />
+          <entry key="Markdown" value="1171" />
+          <entry key="PLAIN_TEXT" value="865" />
+          <entry key="Python" value="10823" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -58,8 +55,8 @@
           <entry key="ipynb" value="19" />
           <entry key="md" value="2" />
           <entry key="png" value="42" />
-          <entry key="py" value="49" />
-          <entry key="txt" value="3" />
+          <entry key="py" value="51" />
+          <entry key="txt" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -67,8 +64,8 @@
           <entry key="IPNB" value="19" />
           <entry key="Image" value="42" />
           <entry key="Markdown" value="2" />
-          <entry key="PLAIN_TEXT" value="11" />
-          <entry key="Python" value="49" />
+          <entry key="PLAIN_TEXT" value="12" />
+          <entry key="Python" value="51" />
         </counts>
       </usages-collector>
     </session>
@@ -79,10 +76,22 @@
         <entry file="file://$PROJECT_DIR$/writeup_report.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="136">
-                <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+              <first_editor relative-caret-position="381">
+                <caret line="178" column="19" lean-forward="true" selection-start-line="178" selection-start-column="19" selection-end-line="178" selection-end-column="19" />
               </first_editor>
               <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="496">
+              <caret line="286" column="12" selection-start-line="286" selection-start-column="12" selection-end-line="286" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -131,13 +140,14 @@
         <option value="$PROJECT_DIR$/_TODOs.txt" />
         <option value="$PROJECT_DIR$/clone.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/writeup_report.md" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1772" />
-    <option name="y" value="-8" />
+    <option name="x" value="61" />
+    <option name="y" value="-19" />
     <option name="width" value="1250" />
     <option name="height" value="1047" />
   </component>
@@ -156,6 +166,11 @@
             <path>
               <item name="Behavioral-Cloning" type="b2602c69:ProjectViewProjectNode" />
               <item name="Behavioral-Cloning" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Behavioral-Cloning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Behavioral-Cloning" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -378,7 +393,21 @@
       <option name="project" value="LOCAL" />
       <updated>1534094500235</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="cleanup workspace">
+      <created>1534094737692</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1534094737693</updated>
+    </task>
+    <task id="LOCAL-00022" summary="example data for project writeup">
+      <created>1534094774477</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1534094774477</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -391,14 +420,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10273973" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3286334" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.28696606" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.34501642" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -445,7 +473,9 @@
     <MESSAGE value="added real brightness adjustment instead of gamma correction&#10;added example image export for writeup" />
     <MESSAGE value="optimized for final run" />
     <MESSAGE value="renamed clone.py to model.py to match project requirements" />
-    <option name="LAST_COMMIT_MESSAGE" value="renamed clone.py to model.py to match project requirements" />
+    <MESSAGE value="cleanup workspace" />
+    <MESSAGE value="example data for project writeup" />
+    <option name="LAST_COMMIT_MESSAGE" value="example data for project writeup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -783,18 +813,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/examples/logfile.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="3" lean-forward="true" selection-start-column="3" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        <state relative-caret-position="496">
+          <caret line="286" column="12" selection-start-line="286" selection-start-column="12" selection-end-line="286" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/writeup_report.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="136">
-            <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+          <first_editor relative-caret-position="381">
+            <caret line="178" column="19" lean-forward="true" selection-start-line="178" selection-start-column="19" selection-end-line="178" selection-end-column="19" />
           </first_editor>
           <second_editor />
         </state>
