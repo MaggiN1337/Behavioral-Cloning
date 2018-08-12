@@ -1,4 +1,3 @@
-import sys
 import csv
 import cv2
 import numpy as np
@@ -27,29 +26,25 @@ TURNING_OFFSET = 0.25
 LIMIT_IMAGES_PER_TURNING_ANGLE = 400
 TRAIN_VALID_SPLIT = 0.2
 TRAIN_EPOCHS = 5
-LEARN_RATE = 0.001
+LEARN_RATE = 0.0001
 
 # train with generators
 BATCH_SIZE = 512
-USE_GENERATOR = False  # type: bool
+USE_GENERATOR = False
 
 # training image editing
-FLIP_IMAGES = True  # type: bool
-ADAPT_BRIGHTNESS = True  # type: bool
-USE_GAMMA_CORRECTION = False  # type: bool
-USE_TRACK2 = True  # type: bool
+FLIP_IMAGES = False
+ADAPT_BRIGHTNESS = True
+USE_GAMMA_CORRECTION = False
+USE_TRACK2 = True
 
 # debug settings
-DEBUG = True  # type: bool
+DEBUG = True
 LIMIT_IMAGES_FOR_DEBUGGING = 40000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
 csv_logger = CSVLogger('log.csv', append=False, separator=';')
-
-
-# save whole stdout to file
-# sys.stdout = open(LOGFILE_NAME, 'w')
 
 
 # method to import and measurements from csv
@@ -63,9 +58,9 @@ def csv_to_array(filename):
 
 
 # method for example image output
-def save_images_as_png(array_with_images):
+def save_rgb_images_as_png(array_with_images, title):
     for i in range(len(array_with_images)):
-        cv2.imwrite(OUTPUT_PATH + 'image_' + str(i) + '.png', array_with_images[i])
+        cv2.imwrite(OUTPUT_PATH + title + str(i) + '.png', cv2.cvtColor(array_with_images[i], cv2.COLOR_BGR2RGB))
 
 
 # method for image augmentation
@@ -82,7 +77,7 @@ def image_augmentation(images_as_array, augment_data):
 
         # as each line contains 3 images, get each of them with its turning angle
         for i in range(3):
-            image_from_line, meas_from_line = get_image_and_measurement_from_line(line, i)
+            image_from_line, meas_from_line = get_image_and_measurement_from_line(line, i, counter)
 
             if distribution[meas_from_line] >= LIMIT_IMAGES_PER_TURNING_ANGLE:
                 # print("Already enough images for turning angle %f" % meas_from_line)
@@ -119,30 +114,33 @@ def image_augmentation(images_as_array, augment_data):
 
         # save only images of first run
         if counter == 0:
-            save_images_as_png(augmented_images)
-            counter += 1
+            save_rgb_images_as_png(augmented_images, "preprocessed")
+
         # count number of processed images (3 for each line) and print every 500
         counter += 3
         if counter % 500 == 0:
             print("Processed %d images." % counter)
+
     return augmented_images, augmented_measurements
 
 
 # load image from filename and get corresponding turning angle
-def get_image_and_measurement_from_line(line, i):
+def get_image_and_measurement_from_line(line, i, counter):
     source_path = line[i]
     filename = source_path.split(FOLDER_SEPARATOR)[-1]
     relative_path_to_image = IMG_PATH + filename
 
     # load image
     image = cv2.imread(relative_path_to_image)
-    # cv2.imwrite(OUTPUT_PATH + 'input_image.png', image)
+    if i == 0 and counter == 0:
+        cv2.imwrite(OUTPUT_PATH + 'input_image_RGB.png', image)
 
     # TODO: crop images here
 
     # convert to RGB color for drive.py
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    # cv2.imwrite(OUTPUT_PATH + 'input_image_RGB.png', image)
+    if i == 0 and counter == 0:
+        cv2.imwrite(OUTPUT_PATH + 'input_image_BGR.png', image)
 
     if USE_GENERATOR:
         # crop image here
@@ -163,8 +161,7 @@ def get_image_and_measurement_from_line(line, i):
 def adjust_brightness(input_image, factor):
     image = Image.fromarray(np.uint8(input_image))
     enhancer_object = ImageEnhance.Brightness(image)
-    out = enhancer_object.enhance(factor)
-    return np.array(out)
+    return np.array(enhancer_object.enhance(factor))
 
 
 # apply gamma correction for shadow simulation
@@ -184,27 +181,23 @@ def gamma_correction(img, gamma):
 # method for batch processing with generators
 # TODO: Fix generator for long duration
 def generator(samples, batch_size=BATCH_SIZE, augment_data=False):
-    X_train_gen, y_train_gen = [], []
+    # X_train_gen, y_train_gen = [], []
     num_samples = len(samples)
     # Loop forever so the generator never terminates
-    i = -1
     while 1:
         X_train_gen, y_train_gen = [], []
         shuffle(samples)
-        i += 1
-        y = 0
+
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset + batch_size]
-            # print("\nNext Batch run %d / %d " % (offset, num_samples))
-            # print("\nNext Batch run %d.%d " % (i, y))
+
 
             X_train_temp, y_train_temp = image_augmentation(batch_samples, augment_data)
 
             X_train_gen = np.array(X_train_temp)
             y_train_gen = np.array(y_train_temp)
-        # TODO: fix yield one level higher
+        # TODO: is yield correct here or one level higher?
         yield shuffle(X_train_gen, y_train_gen)
-        y += 1
 
 
 # define keras model
@@ -335,7 +328,7 @@ if USE_GENERATOR:
                                                   validation_steps=len(validation_samples),
                                                   epochs=TRAIN_EPOCHS,
                                                   verbose=1,
-                                                  # callbacks=[csv_logger],
+                                                  callbacks=[csv_logger],
                                                   # max_queue_size=3,
                                                   # workers=4
                                                   # use_multiprocessing=False
@@ -347,7 +340,7 @@ else:
                                         shuffle=True,
                                         epochs=TRAIN_EPOCHS,
                                         verbose=1,
-                                        # callbacks=[csv_logger]
+                                        callbacks=[csv_logger]
                                         )
 
 # print layer information
