@@ -1,8 +1,8 @@
+.idea/
 *.zip
 *.h5
 windows_sim/
-data/
-data2/
-data3/
-data4/
-.idea/
+_backup/
+track1/
+track2/
+run1/

@@ -1,8 +1,6 @@
 # **Behavioral Cloning** 
 
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+## Writeup by Marcus Neuert (2018-08-12)
 
 ---
 
@@ -18,13 +16,18 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./loss_visualization.png "Model Visualization"
+[image2]: ./training_data_distribution.png "Training data distribution"
+[image3]: ./examples/input_image_BGR.png "Original Image imported by opencv in BGR"
+[image4]: ./examples/input_image_RGB.png "Original Image converted to RGB"
+[image5]: ./examples/preprocessed1.png "Brigth Center Image"
+[image6]: ./examples/preprocessed2.png "Dark Center Image"
+[image7]: ./examples/preprocessed3.png "Original Left Image"
+[image7]: ./examples/preprocessed4.png "Bright Left Image"
+[image7]: ./examples/preprocessed5.png "Dark Left Image"
+[image7]: ./examples/preprocessed6.png "Original Right Image"
+[image7]: ./examples/preprocessed7.png "Bright Right Image"
+[image7]: ./examples/preprocessed8.png "Dark Left Image"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  

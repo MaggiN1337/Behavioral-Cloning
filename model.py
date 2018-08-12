@@ -44,7 +44,7 @@ LIMIT_IMAGES_FOR_DEBUGGING = 40000
 
 # settings for logging
 LOGFILE_NAME = 'logfile.txt'
-csv_logger = CSVLogger('log.csv', append=False, separator=';')
+csv_logger = CSVLogger(OUTPUT_PATH + 'log.csv', append=False, separator=';')
 
 
 # method to import and measurements from csv
@@ -248,7 +248,7 @@ def plot_counts_as_png(measurements, title):
     data, counts = zip(*measurements)
     plt.bar(data, counts, 0.05, align='center')
     plt.title(title)
-    plt.savefig('training_data_distribution.png')
+    plt.savefig(OUTPUT_PATH + 'training_data_distribution.png')
     plt.close()
 
 
@@ -261,13 +261,13 @@ def plot_loss_functions_as_png(training):
     plt.xlabel('epoch')
     plt.xticks(np.arange(0, TRAIN_EPOCHS, step=1.0))
     plt.legend(['training set', 'validation set'], loc='upper right')
-    plt.savefig('loss_visualization.png')
+    plt.savefig(OUTPUT_PATH + 'loss_visualization.png')
     plt.close()
 
 
 # write input variables and model summary to logfile
 def export_execution_details():
-    with open(LOGFILE_NAME, 'w') as f:
+    with open(OUTPUT_PATH + LOGFILE_NAME, 'w') as f:
         with redirect_stdout(f):
             print("This run had the following settings:")
             print("Track2 was used: " + str(USE_TRACK2))

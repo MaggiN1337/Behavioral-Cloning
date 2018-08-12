@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="123cc7e5-a4ff-499c-8e65-03248866fbd8" name="Default Changelist" comment="">
+    <list default="true" id="123cc7e5-a4ff-499c-8e65-03248866fbd8" name="Default Changelist" comment="added training data distribution and moved debug limitation to data_augmentation method instead of csv import">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Behavioral-Cloning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Behavioral-Cloning.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clone.py" beforeDir="false" afterPath="$PROJECT_DIR$/clone.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driving_log.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lastrun.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/loss_visualization.png" beforeDir="false" afterPath="$PROJECT_DIR$/loss_visualization.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modelsummary.txt" beforeDir="false" afterPath="$PROJECT_DIR$/modelsummary.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modelsummary.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/writeup_template.md" beforeDir="false" afterPath="$PROJECT_DIR$/writeup_report.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,40 +19,56 @@
     <session id="1770785986">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="14" />
+          <entry key="project.closed" value="29" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.14" value="1" />
+          <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.21" value="1" />
-          <entry key="project.open.time.5" value="7" />
-          <entry key="project.open.time.6" value="2" />
-          <entry key="project.open.time.7" value="4" />
-          <entry key="project.opened" value="15" />
+          <entry key="project.open.time.22" value="1" />
+          <entry key="project.open.time.5" value="8" />
+          <entry key="project.open.time.6" value="6" />
+          <entry key="project.open.time.7" value="8" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="30" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="202" />
-          <entry key="dummy" value="26" />
-          <entry key="gitignore" value="41" />
-          <entry key="py" value="3154" />
+          <entry key="dummy" value="91" />
+          <entry key="gitignore" value="60" />
+          <entry key="md" value="297" />
+          <entry key="py" value="10591" />
+          <entry key="txt" value="665" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="67" />
-          <entry key="Python" value="3356" />
+          <entry key="Markdown" value="297" />
+          <entry key="PLAIN_TEXT" value="816" />
+          <entry key="Python" value="10793" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gitattributes" value="1" />
-          <entry key="gitignore" value="2" />
-          <entry key="py" value="20" />
+          <entry key="gitignore" value="7" />
+          <entry key="ipynb" value="19" />
+          <entry key="md" value="2" />
+          <entry key="png" value="42" />
+          <entry key="py" value="49" />
+          <entry key="txt" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="3" />
-          <entry key="Python" value="20" />
+          <entry key="IPNB" value="19" />
+          <entry key="Image" value="42" />
+          <entry key="Markdown" value="2" />
+          <entry key="PLAIN_TEXT" value="11" />
+          <entry key="Python" value="49" />
         </counts>
       </usages-collector>
     </session>
@@ -62,20 +76,35 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/clone.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="97" column="22" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-                <element signature="e#739#2166#0" />
-                <element signature="e#2828#3104#0" />
-              </folding>
+        <entry file="file://$PROJECT_DIR$/writeup_report.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="136">
+                <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor />
+              <second_editor />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -83,6 +112,12 @@
       <find>subsampe</find>
       <find>elu</find>
       <find>X_train</find>
+      <find>BATCH_SIZE</find>
+      <find>print</find>
+      <find>rgb</find>
+      <find>shuffle</find>
+      <find>extend</find>
+      <find># type: bool</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -91,17 +126,20 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/drive.py" />
+        <option value="$PROJECT_DIR$/BehavioralCloning.ipynb" />
+        <option value="$PROJECT_DIR$/_TODOs.txt" />
         <option value="$PROJECT_DIR$/clone.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/writeup_report.md" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-967" />
-    <option name="y" value="2" />
-    <option name="width" value="974" />
-    <option name="height" value="1045" />
+    <option name="x" value="-1772" />
+    <option name="y" value="-8" />
+    <option name="width" value="1250" />
+    <option name="height" value="1047" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -111,6 +149,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -122,7 +161,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -140,7 +178,24 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.clone">
+    <configuration name="Behavioral-Cloning" type="JupiterNotebook" factoryName="Jupyter Notebook">
+      <module name="Behavioral-Cloning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\mneue\AppData\Local\conda\conda\envs\carnd-term1\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="additionalOptions" value="" />
+      <option name="ipnbHost" value="127.0.0.1" />
+      <option name="ipnbPort" value="8888" />
+      <method v="2" />
+    </configuration>
     <configuration name="clone" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Behavioral-Cloning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -162,6 +217,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Jupyter Notebook.Behavioral-Cloning" />
+      <item itemvalue="Python.clone" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.clone" />
@@ -179,9 +238,150 @@
       <option name="presentableId" value="Default" />
       <updated>1532638421676</updated>
     </task>
+    <task id="LOCAL-00001" summary="update clone">
+      <created>1533243317665</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1533243317665</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fixed multi image calculation">
+      <created>1533246354889</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1533246354889</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed track 2 and generator">
+      <created>1533331654476</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1533331654476</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fixed generator">
+      <created>1533333106818</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1533333106819</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fixed generator">
+      <created>1533422030889</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1533422030889</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fixed generator">
+      <created>1533424231173</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1533424231174</updated>
+    </task>
+    <task id="LOCAL-00007" summary="added gamma correction">
+      <created>1533464742489</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1533464742489</updated>
+    </task>
+    <task id="LOCAL-00008" summary="created jupyter notebook">
+      <created>1533466708651</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1533466708651</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added debugging for generators">
+      <created>1533481700214</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1533481700214</updated>
+    </task>
+    <task id="LOCAL-00010" summary="code optimization">
+      <created>1533589052776</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1533589052777</updated>
+    </task>
+    <task id="LOCAL-00011" summary="code optimization one more time">
+      <created>1533591195606</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1533591195606</updated>
+    </task>
+    <task id="LOCAL-00012" summary="added BGR to RGB conversion for drive.py">
+      <created>1533592231929</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1533592231929</updated>
+    </task>
+    <task id="LOCAL-00013" summary="added preprocessing progress output">
+      <created>1533676119532</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1533676119532</updated>
+    </task>
+    <task id="LOCAL-00014" summary="added training data distribution and moved debug limitation to data_augmentation method instead of csv import">
+      <created>1534020397831</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1534020397831</updated>
+    </task>
+    <task id="LOCAL-00015" summary="optimized training data limitation based on distribution">
+      <created>1534025886794</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1534025886794</updated>
+    </task>
+    <task id="LOCAL-00016" summary="added training data distribution and moved debug limitation to data_augmentation method instead of csv import">
+      <created>1534027166968</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1534027166968</updated>
+    </task>
+    <task id="LOCAL-00017" summary="optimized training parameters">
+      <created>1534027474666</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1534027474667</updated>
+    </task>
+    <task id="LOCAL-00018" summary="added real brightness adjustment instead of gamma correction&#10;added example image export for writeup">
+      <created>1534085367757</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1534085367757</updated>
+    </task>
+    <task id="LOCAL-00019" summary="optimized for final run">
+      <created>1534093583899</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1534093583899</updated>
+    </task>
+    <task id="LOCAL-00020" summary="renamed clone.py to model.py to match project requirements">
+      <created>1534094500235</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1534094500235</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -194,44 +394,145 @@
     <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10273973" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10273973" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.28741866" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.28696606" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.34501642" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.329718" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32968238" />
+      <window_info anchor="bottom" id="Version Control" order="7" visible="true" weight="0.329718" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.329718" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.30585682" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.30558598" />
+      <window_info anchor="bottom" id="Messages" order="11" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update clone" />
+    <MESSAGE value="fixed multi image calculation" />
+    <MESSAGE value="fixed track 2 and generator" />
+    <MESSAGE value="fixed generator" />
+    <MESSAGE value="added gamma correction" />
+    <MESSAGE value="created jupyter notebook" />
+    <MESSAGE value="added debugging for generators" />
+    <MESSAGE value="code optimization" />
+    <MESSAGE value="code optimization one more time" />
+    <MESSAGE value="added BGR to RGB conversion for drive.py" />
+    <MESSAGE value="added preprocessing progress output" />
+    <MESSAGE value="optimized training data limitation based on distribution" />
+    <MESSAGE value="added training data distribution and moved debug limitation to data_augmentation method instead of csv import" />
+    <MESSAGE value="optimized training parameters" />
+    <MESSAGE value="added real brightness adjustment instead of gamma correction&#10;added example image export for writeup" />
+    <MESSAGE value="optimized for final run" />
+    <MESSAGE value="renamed clone.py to model.py to match project requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="renamed clone.py to model.py to match project requirements" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/clone.py</url>
-          <line>119</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/clone.py</url>
-          <line>151</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="len(array_with_images)" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>len(array_with_images)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(augmented_images)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distribution[meas_from_line]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distribution[0.0]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distribution['0.0']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distribution['1.0']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distribution.items()['1.0']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(distribution)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(counter)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(images_as_array)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>len(images_as_array)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(y_train_temp)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len((y_train_temp)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/sklearn/model_selection/_split.py">
@@ -262,60 +563,240 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/drive.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/cv2/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/cv2/__init__.py" />
     <entry file="file://$PROJECT_DIR$/.gitattributes">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/layers/core.py">
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/engine/sequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="651" selection-start-line="651" selection-end-line="651" />
+        <state relative-caret-position="355">
+          <caret line="108" selection-start-line="108" selection-end-line="108" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/engine/training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="484" selection-start-line="484" selection-end-line="484" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/sklearn/utils/validation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="203" selection-start-line="203" selection-end-line="203" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/engine/base_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="507" selection-start-line="507" selection-end-line="507" />
+        <state relative-caret-position="423">
+          <caret line="463" selection-start-line="463" selection-end-line="463" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/engine/sequential.py">
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/layers/core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="192" selection-start-line="192" selection-end-line="192" />
+        <state relative-caret-position="489">
+          <caret line="619" column="8" selection-start-line="619" selection-start-column="8" selection-end-line="619" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/engine/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="126" selection-start-line="126" selection-end-line="126" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/utils/data_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="657" selection-start-line="657" selection-end-line="657" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-2122377580/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="4130" column="8" selection-start-line="4130" selection-start-column="8" selection-end-line="4130" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Dropbox/Udacity/Traffic_Sign/Traffic_Sign_Classifier.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_backup/BehavioralCloning.ipynb" />
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/tensorflow/python/client/session.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21862">
+          <caret line="1305" selection-start-line="1305" selection-end-line="1305" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="881" selection-start-line="881" selection-end-line="881" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BehavioralCloning.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clone.ipynb" />
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-2122377580/cv2/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="714" selection-start-line="714" selection-end-line="714" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/drive.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-697">
+          <caret line="71" column="14" selection-start-line="71" selection-start-column="14" selection-end-line="71" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-2122377580/numpy/random/mtrand.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="2373" column="4" selection-start-line="2373" selection-start-column="4" selection-end-line="2373" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/collections/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="460" column="6" selection-start-line="460" selection-start-column="6" selection-end-line="460" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="1671" column="4" selection-start-line="1671" selection-start-column="4" selection-end-line="1671" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_TODOs.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="310" selection-start-line="310" selection-end-line="310" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/matplotlib/axis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="1624" selection-start-line="1624" selection-end-line="1624" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/keras/backend/tensorflow_backend.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="3153" selection-start-line="3153" selection-end-line="3153" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logfile.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../carnd-term1/traffic-sign-classifier/Traffic_Sign_Classifier.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/conda/conda/envs/carnd-term1/Lib/site-packages/PIL/Image.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="2535" selection-start-line="2535" selection-end-line="2535" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/preprocessed0.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_data_distribution.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/loss_visualization.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/video.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/clone.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="97" column="22" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
+        <state relative-caret-position="2107">
+          <caret line="330" column="50" lean-forward="true" selection-start-line="330" selection-start-column="50" selection-end-line="330" selection-end-column="50" />
           <folding>
-            <element signature="e#0#10#0" expanded="true" />
-            <element signature="e#739#2166#0" />
-            <element signature="e#2828#3104#0" />
+            <element signature="e#6#16#0" expanded="true" />
+            <element signature="e#1444#1605#0" />
+            <element signature="e#1700#1853#0" />
+            <element signature="e#1947#4479#0" />
+            <element signature="e#4599#5315#0" />
+            <element signature="e#5419#5585#0" />
+            <element signature="e#5673#5935#0" />
+            <element signature="e#5998#6782#0" />
+            <element signature="e#6925#8137#0" />
+            <element signature="e#8264#8432#0" />
+            <element signature="e#8530#8901#0" />
+            <element signature="e#8993#10009#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/writeup_report.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="136">
+            <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
